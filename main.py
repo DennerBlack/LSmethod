@@ -23,17 +23,20 @@ all_data_num = data_len*data_width
 data = np.array([np.arange(data_len) for i in range(data_width)]).flatten() * 2 + 1
 data.sort()
 
-np.random.seed(109)
+#np.random.seed(109)
+np.random.seed(103)
 synth_data_sin = {'X': data,
                   'Y': np.sin(data*np.random.uniform(0.3, 0.3))*8+np.random.normal(0, np.log(data_len)/2, all_data_num)}
 #                                                 ^ частота(ширина) синусоиды    ^ добавление шумов  ^ величина шума
-np.random.seed(100)
+#np.random.seed(100)
+np.random.seed(104)
 synth_data_linear = {'X': data,
                      'Y': data+np.random.normal(0, np.log(data_len), all_data_num)}
 #                                         ^ добавление шумов  ^ величина шума
 
 
-np.random.seed(105)
+#np.random.seed(105)
+np.random.seed(107)
 synth_data_expanse = {'X': data,
                       'Y': np.asarray([np.ones(all_data_num)[i]*2+np.abs(np.random.normal(0, (i+2)**2, 1)[0])/55 for i in range(len(data))])}
 #                                                   ^ добавление шумов  ^ величина шума
@@ -80,8 +83,8 @@ def vis(data, images_number, img_index, name):
     t_diff = t.interval(1. - alpha, all_data_num-2)
     min_int = [lin_reg[i*data_width] + t_diff[0] * np.sqrt(1 + 1/all_data_num + (((x[i*data_width] - mx)**2)/ssdx))*s for i in range(data_len)]
     max_int = [lin_reg[i*data_width] + t_diff[1] * np.sqrt(1 + 1/all_data_num + (((x[i*data_width] - mx)**2)/ssdx))*s for i in range(data_len)]
-    sum_err2 = np.sum((np.asarray([np.mean(lin_reg[i:data_width*(i+1)]) for i in range(data_len)]) - my)**2)
-    ss_diff = (ssdy-ssdy_reg)/sum_err2
+    sum_of_summ_of_measure_groups = np.sum((np.asarray([np.mean(lin_reg[i:data_width*(i+1)]) for i in range(data_len)]) - my)**2)
+    ss_diff = (ssdy-ssdy_reg)/sum_of_summ_of_measure_groups
 
     dot_element_mx = Line2D([0], [0], marker='o', color='w', label=r'$\bar{X}$ = '+f'{mx:.3f}',markerfacecolor='black', markersize=6)
     dot_element_my = Line2D([0], [0], marker='o', color='w', label=r'$\bar{Y}$ = '+f'{my:.3f}',markerfacecolor='black', markersize=6)
@@ -136,6 +139,6 @@ vis(synth_data_linear, 3, 1, "Линейновозрастающий набор 
 vis(synth_data_sin, 3, 2, "Синусоидный набор данных c наложенным Гауссовым шумом")
 vis(synth_data_expanse, 3, 3, "Плоский набор данных c наложенным мультипликативным Гауссовым шумом")
 
-plt.subplots_adjust(wspace=0.56, top=0.88, bottom=0.6, left=0.015, right=0.89)
+plt.subplots_adjust(wspace=0.56, top=0.88, bottom=0.6, left=0.045, right=0.89)
 
 plt.show()
