@@ -1,8 +1,7 @@
 import numpy as np
 import matplotlib
-
 import matplotlib.pyplot as plt
-
+from functools import partial
 from matplotlib.lines import Line2D
 from scipy.stats import t
 
@@ -14,6 +13,28 @@ custom_preamble = r"""
 
 plt.rcParams['text.usetex'] = True
 plt.rcParams['text.latex.preamble'] = custom_preamble
+
+_title_font_size = 14
+_main_font_size  = 14
+_table_font_size = 14
+
+
+def setup_scale(figsize, dpi, title_font_size, main_font_size, table_font_size):
+    plt.figure(figsize=figsize, dpi=dpi)
+    global _title_font_size, _main_font_size, _table_font_size
+    _title_font_size = title_font_size
+    _main_font_size = main_font_size
+    _table_font_size = table_font_size
+
+
+resolutions = {"FHD": partial(setup_scale, figsize=(34,18), dpi=56, title_font_size=18, main_font_size=18, table_font_size=14),
+               "3K": partial(setup_scale, figsize=(35,14), dpi=96, title_font_size=14, main_font_size=14, table_font_size=14),
+               "4K": partial(setup_scale, figsize=(35,19), dpi=72, title_font_size=18, main_font_size=18, table_font_size=14)
+               }
+
+
+resolutions["3K"]()
+
 
 data_len = 5
 data_width = 4
@@ -28,6 +49,8 @@ np.random.seed(109)
 synth_data_sin = {'X': data,
                   'Y': np.sin(data*np.random.uniform(0.3, 0.3))*8+np.random.normal(0, np.log(data_len)/2, all_data_num)}
 #                                                 ^ частота(ширина) синусоиды    ^ добавление шумов  ^ величина шума
+
+
 #np.random.seed(100)
 np.random.seed(100)
 synth_data_linear = {'X': data,
@@ -40,6 +63,7 @@ np.random.seed(105)
 synth_data_expanse = {'X': data,
                       'Y': np.asarray([np.ones(all_data_num)[i]*2+np.abs(np.random.normal(0, (i+2)**2, 1)[0])/55 for i in range(len(data))])}
 #                                                   ^ добавление шумов  ^ величина шума
+
 
 def calculate_slope(x, y):
     mx = x - x.mean()
@@ -124,13 +148,13 @@ def vis(data, images_number, img_index, name):
 
     plt.rc('text', usetex=True)
     plot = plt.subplot(1, images_number, img_index)
-    plt.title(name, fontsize=14)
+    plt.title(name, fontsize=_title_font_size)
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.scatter(x, y)
     plt.plot(x, lin_reg, color='red', label="x")
-    leg1 = plot.legend(handles=legend_elements, loc='center', bbox_to_anchor=(0.5, -0.8), fontsize=14)
-    leg2 = plot.legend(handles=dot_element_table, loc='center', bbox_to_anchor=(0.5, -1.7), fontsize=14)
+    leg1 = plot.legend(handles=legend_elements, loc='center', bbox_to_anchor=(0.5, -0.8), fontsize=_main_font_size)
+    leg2 = plot.legend(handles=dot_element_table, loc='center', bbox_to_anchor=(0.5, -1.7), fontsize=_table_font_size)
     matplotlib.pyplot.gca().add_artist(leg1)
     matplotlib.pyplot.gca().add_artist(leg2)
 
@@ -199,13 +223,13 @@ def vis_poly(data, images_number, img_index, name):
 
     plt.rc('text', usetex=True)
     plot = plt.subplot(1, images_number, img_index)
-    plt.title(name, fontsize=14)
+    plt.title(name, fontsize=_title_font_size)
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.scatter(x, y)
     plt.plot(x, poly_reg(x), color='red', label="x")
-    leg1 = plot.legend(handles=legend_elements, loc='center', bbox_to_anchor=(0.5, -0.8), fontsize=14)
-    leg2 = plot.legend(handles=dot_element_table, loc='center', bbox_to_anchor=(0.5, -1.7), fontsize=14)
+    leg1 = plot.legend(handles=legend_elements, loc='center', bbox_to_anchor=(0.5, -0.8), fontsize=_main_font_size)
+    leg2 = plot.legend(handles=dot_element_table, loc='center', bbox_to_anchor=(0.5, -1.7), fontsize=_table_font_size)
     matplotlib.pyplot.gca().add_artist(leg1)
     matplotlib.pyplot.gca().add_artist(leg2)
 
